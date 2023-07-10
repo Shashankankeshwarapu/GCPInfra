@@ -78,6 +78,7 @@ resource "google_container_node_pool" "primary" {
   node_config {
     #preemptible  = false
     machine_type = "e2-medium"
+    tags = ["generalaccess"]
 
   }
 }
