@@ -38,7 +38,7 @@ resource "google_compute_instance" "default" {
   allow_stopping_for_update = true
   tags = ["generalaccess"]
 
-metadata_startup_script = file("Userdata.txt")
+metadata_startup_script = file("Userdata.sh")
 
     boot_disk {
     initialize_params {
