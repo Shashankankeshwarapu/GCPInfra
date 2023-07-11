@@ -1,10 +1,10 @@
-####Create VPC##########
+#############Create VPC##############
 resource "google_compute_network" "vpc" {
  name                    = "samplevpc"
  auto_create_subnetworks = "false"
 }
 
-#####Create Subnet############
+#############Create Subnet############
 resource "google_compute_subnetwork" "subnet" {
  name          = "samplesubnet"
  ip_cidr_range = "10.0.0.0/16"
@@ -13,7 +13,7 @@ resource "google_compute_subnetwork" "subnet" {
  region      = "${var.google_region}"
 }
 
-#####VPC firewall configuration####
+######## Create VPC firewall configuration#######
 resource "google_compute_firewall" "firewall" {
   name    = "samplefirewall"
   network = google_compute_network.vpc.name
@@ -31,6 +31,7 @@ resource "google_compute_firewall" "firewall" {
   target_tags = ["generalaccess"]
 }
 
+############# Create Instance ############
 resource "google_compute_instance" "default" {
   name         = "sampleinstance"
   machine_type = "e2-micro"
@@ -54,18 +55,18 @@ metadata_startup_script = file("Userdata.sh")
        }
    }
 
-#metadata_startup_script = file("Userdata.txt")
-
+############ Create Cluster ################
 resource "google_container_cluster" "primary" {
   description  = "GKE Cluster for sample project"
   name     = "sample-gke-cluster"
   location = "us-central1"
   network  = google_compute_network.vpc.name
-  remove_default_node_pool = true
-  initial_node_count       = 1
   subnetwork               = google_compute_subnetwork.subnet.name
+  remove_default_node_pool = true
+  initial_node_count       = 1  
 }
 
+############## Create Node Pool ###############
 resource "google_container_node_pool" "primary" {
   name       = "sample-node-pool"
   cluster    = google_container_cluster.primary.id
@@ -76,7 +77,6 @@ resource "google_container_node_pool" "primary" {
 
 
   node_config {
-    #preemptible  = false
     machine_type = "e2-medium"
     tags = ["generalaccess"]
 
